@@ -1,7 +1,8 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BASE_URL = "https://campus-sathi-server.onrender.com/api/v1";
+// const BASE_URL = "https://campus-sathi-server.onrender.com/api/v1";
+const BASE_URL = "http://10.254.191.185:5000/api/v1";
 
 export default BASE_URL;
 
