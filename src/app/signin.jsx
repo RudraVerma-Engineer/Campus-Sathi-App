@@ -19,6 +19,7 @@ import { router } from "expo-router";
 import { loginUser } from "../services/authServices.js";
 import GradientText from "../Component/GradientText.jsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Signin() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -26,10 +27,10 @@ export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   // Per-field error state
   const [errors, setErrors] = useState({ email: "", password: "" });
-
   // ─── Validation ────────────────────────────────────────────────────────────
   const validate = () => {
     const newErrors = { email: "", password: "" };
@@ -75,9 +76,11 @@ export default function Signin() {
       const data = await loginUser(email, password);
 
       // Store token from the loginUser response
-      if (data?.token) {
-        await AsyncStorage.setItem("token", data.token);
-      }
+      // if (data?.token) {
+      //   await AsyncStorage.setItem("token", data.token);
+      // }
+
+      await login(data);
 
       Alert.alert("Success", "Login Successful");
       router.replace("/(tabs)");

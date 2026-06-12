@@ -12,6 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const USER = {
   firstname: "Raj",
@@ -42,6 +43,7 @@ const MENU = [
 ];
 
 export default function ProfileScreen() {
+  const { user, logout } = useAuth();
   const handleSignOut = () => {
     Alert.alert("Sign Out", "Are you sure you want to sign out?", [
       { text: "Cancel", style: "cancel" },
@@ -49,7 +51,7 @@ export default function ProfileScreen() {
         text: "Sign Out",
         style: "destructive",
         onPress: async () => {
-          await AsyncStorage.removeItem("token");
+          await logout();
           router.replace("/signin");
         },
       },
@@ -81,14 +83,14 @@ export default function ProfileScreen() {
           </LinearGradient>
           <View style={{ flex: 1 }}>
             <Text style={s.name}>
-              {USER.firstname} {USER.lastname}
+              {user?.fullname?.firstname} {user?.fullname?.lastname}
             </Text>
             <Text style={s.role}>
-              B.Tech · {USER.department} · Sem {USER.semester}
+              {user?.course} · {user?.department} · Sem {user?.semester}
             </Text>
-            <Text style={s.email}>{USER.email}</Text>
+            <Text style={s.email}>{user?.email}</Text>
             <View style={s.rollBadge}>
-              <Text style={s.rollTxt}>{USER.rollNumber}</Text>
+              <Text style={s.rollTxt}>{user?.rollNumber}</Text>
             </View>
           </View>
         </View>
@@ -96,13 +98,13 @@ export default function ProfileScreen() {
         {/* Stat boxes */}
         <View style={{ flexDirection: "row", gap: 10 }}>
           {[
-            { icon: "medal-outline", value: USER.cgpa, label: "CGPA" },
+            { icon: "medal-outline", value: user?.cgpa, label: "CGPA" },
             {
               icon: "book-open-outline",
-              value: USER.semester,
+              value: user?.semester,
               label: "SEMESTER",
             },
-            { icon: "code-tags", value: USER.skills, label: "SKILLS" },
+            { icon: "code-tags", value: user?.skills===undefined?"":user?.skills, label: "SKILLS" },
           ].map((i) => (
             <View key={i.label} style={s.statBox}>
               <MaterialCommunityIcons name={i.icon} size={22} color="#4F46E5" />

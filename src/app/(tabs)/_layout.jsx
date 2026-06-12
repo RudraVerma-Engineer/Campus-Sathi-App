@@ -1,7 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+// TabIcon — plain View, NO SafeAreaView inside icon
 function TabIcon({ name, focused }) {
   return (
     <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
@@ -15,12 +17,28 @@ function TabIcon({ name, focused }) {
 }
 
 export default function TabLayout() {
+  // Gets real bottom inset:
+  //   Gesture nav phones  → ~34px (the home bar area)
+  //   Button nav phones   → ~0–16px
+  //   No nav bar          → 0
+  const insets = useSafeAreaInsets();
+
+  // Total tab bar height = content (icon+label) + device bottom inset
+  const TAB_HEIGHT = 58 + insets.bottom;
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            height: TAB_HEIGHT,
+            paddingBottom: insets.bottom + 4,
+          },
+        ],
         tabBarShowLabel: true,
+        tabBarLabelStyle: styles.tabLabel,
         tabBarActiveTintColor: "#4F46E5",
         tabBarInactiveTintColor: "#9CA3AF",
       }}
@@ -54,8 +72,9 @@ export default function TabLayout() {
         options={{
           title: "Events",
           tabBarIcon: ({ focused }) => (
+            // Fixed typo: "calender-month" → "calendar-month"
             <TabIcon
-              name={focused ? "calender-month" : "calendar-month-outline"}
+              name={focused ? "calendar-month" : "calendar-month-outline"}
               focused={focused}
             />
           ),
@@ -94,28 +113,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderTopColor: "#F3F4F6",
-    height: 64,
-    paddingBottom: 8,
     paddingTop: 6,
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 12,
     elevation: 10,
+    // height + paddingBottom set dynamically via insets above
   },
   tabLabel: {
-    fontSize:10,
-    fontWeight:"600",
-    marginTop:-2,
+    fontSize: 10,
+    fontWeight: "600",
+    marginTop: 2,
   },
-  iconWrap:{
-    width:44,
-    height:32,
-    borderRadius:10,
-    justifyContent:"center",
-    alignItems:"center",
+  iconWrap: {
+    width: 44,
+    height: 32,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
-
-  iconWrapActive:{
-    backgroundColor:"#EEF2FF"
-  }
+  iconWrapActive: {
+    backgroundColor: "#EEF2FF",
+  },
 });

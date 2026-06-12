@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 // ─── Mock user (replace with AsyncStorage/context in production) ──────────────
 const USER = { firstname: "Raj", department: "CSE", semester: 6, cgpa: 8.6 };
@@ -90,6 +91,7 @@ const ring = StyleSheet.create({
 });
 
 export default function HomeScreen() {
+  const { user, logout } = useAuth();
   return (
     <SafeAreaView style={s.safe} edges={["top"]}>
       <StatusBar barStyle="light-content" />
@@ -99,7 +101,7 @@ export default function HomeScreen() {
           <View style={s.headerRow}>
             <View>
               <Text style={s.greeting}>{getGreeting()}</Text>
-              <Text style={s.heroName}>Hey {USER.firstname} 👋</Text>
+              <Text style={s.heroName}>Hey {user?.fullname?.firstname} 👋</Text>
             </View>
             <TouchableOpacity style={s.bell}>
               <Feather name="bell" size={22} color="#fff" />
@@ -110,9 +112,9 @@ export default function HomeScreen() {
           {/* Info chips */}
           <View style={s.chipRow}>
             {[
-              `🎓 ${USER.department}`,
-              `📚 Sem ${USER.semester}`,
-              `⭐ CGPA ${USER.cgpa}`,
+              `🎓 ${user?.department === undefined ? "" : user?.department}`,
+              `📚 Sem ${user?.semester === undefined ? "" : user?.semester}`,
+              `⭐ CGPA ${user?.cgpa === undefined ? "" : user?.cgpa}`,
             ].map((c) => (
               <View key={c} style={s.chip}>
                 <Text style={s.chipTxt}>{c}</Text>
@@ -123,9 +125,11 @@ export default function HomeScreen() {
           {/* Search */}
           <View style={s.search}>
             <Feather name="search" size={17} color="rgba(255,255,255,0.7)" />
-            <Text style={s.searchTxt}>
-              Search notices, events, companies...
-            </Text>
+            <TextInput
+              style={s.searchTxt}
+              placeholder="Search notices, events, companies..."
+              placeholderTextColor={"rgba(255,255,255,0.7)"}
+            />
           </View>
         </LinearGradient>
 
@@ -388,7 +392,7 @@ const s = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.2)",
     borderRadius: 16,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 6,
     gap: 10,
   },
   searchTxt: { color: "rgba(255,255,255,0.7)", fontSize: 14 },
