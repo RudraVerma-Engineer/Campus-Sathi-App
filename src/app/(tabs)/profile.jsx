@@ -27,16 +27,33 @@ const USER = {
 };
 
 const MENU = [
-  { icon: "account-cog-outline", label: "Account settings", color: "#374151" },
+  {
+    icon: "account-cog-outline",
+    identity: "AccountSettings",
+    label: "Account settings",
+    color: "#374151",
+  },
   {
     icon: "shield-check-outline",
+    identity: "Privacy&Security",
     label: "Privacy & Security",
     color: "#374151",
   },
-  { icon: "bell-outline", label: "Notifications", color: "#374151" },
-  { icon: "help-circle-outline", label: "Help & Support", color: "#374151" },
+  {
+    icon: "bell-outline",
+    identity: "Notifications",
+    label: "Notifications",
+    color: "#374151",
+  },
+  {
+    icon: "help-circle-outline",
+    identity: "Help&Support",
+    label: "Help & Support",
+    color: "#374151",
+  },
   {
     icon: "information-outline",
+    identity: "AboutCampusSathi",
     label: "About Campus Sathi",
     color: "#374151",
   },
@@ -58,12 +75,16 @@ export default function ProfileScreen() {
     ]);
   };
 
+  const handleLabelSetting = (v) => {
+    return router.navigate(`/settingPages/${v}`);
+  };
+
   return (
     <SafeAreaView style={s.safe} edges={["top"]}>
       {/* Header */}
       <View style={s.header}>
         <Text style={s.title}>Profile</Text>
-        <TouchableOpacity style={s.settingsBtn}>
+        <TouchableOpacity style={s.settingsBtn} onPress={()=>router.navigate("/settingPages/MainSetting")}>
           <MaterialCommunityIcons
             name="cog-outline"
             size={22}
@@ -104,7 +125,11 @@ export default function ProfileScreen() {
               value: user?.semester,
               label: "SEMESTER",
             },
-            { icon: "code-tags", value: user?.skills===undefined?"":user?.skills, label: "SKILLS" },
+            {
+              icon: "code-tags",
+              value: user?.skills === undefined ? "" : user?.skills,
+              label: "SKILLS",
+            },
           ].map((i) => (
             <View key={i.label} style={s.statBox}>
               <MaterialCommunityIcons name={i.icon} size={22} color="#4F46E5" />
@@ -170,6 +195,7 @@ export default function ProfileScreen() {
             <TouchableOpacity
               key={item.label}
               style={[s.menuItem, idx < MENU.length - 1 && s.menuItemBorder]}
+              onPress={() => handleLabelSetting(item.identity)}
             >
               <View style={s.menuLeft}>
                 <MaterialCommunityIcons

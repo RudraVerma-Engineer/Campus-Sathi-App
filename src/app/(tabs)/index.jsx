@@ -94,7 +94,7 @@ export default function HomeScreen() {
   const { user, logout } = useAuth();
   return (
     <SafeAreaView style={s.safe} edges={["top"]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* ── Gradient Header ── */}
         <LinearGradient colors={["#4F46E5", "#0EA5E9"]} style={s.header}>
